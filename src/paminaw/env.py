@@ -31,6 +31,26 @@ def versions(packages: tuple[str, ...] = REPORTED) -> dict[str, str]:
     return out
 
 
+def torchcodec_problem() -> str | None:
+    """Explain how to fix TorchCodec if it is installed but cannot load; ``None`` if all is well.
+
+    ``transformers`` imports TorchCodec whenever it is installed, so a copy without
+    FFmpeg breaks every ASR pipeline call, even on plain NumPy audio.
+    """
+    try:
+        metadata.version("torchcodec")
+    except metadata.PackageNotFoundError:
+        return None  # not installed: torchaudio.load falls back to soundfile
+    try:
+        import torchcodec  # noqa: F401
+    except Exception:
+        return (
+            "TorchCodec is installed but FFmpeg is missing, which breaks the ASR pipeline. "
+            "Fix: run `pip uninstall -y torchcodec` (or install FFmpeg), then restart."
+        )
+    return None
+
+
 def set_seed(seed: int = SEED) -> None:
     """Fix Python, NumPy and PyTorch random seeds (default: the paper's 20260814)."""
     random.seed(seed)
@@ -72,6 +92,9 @@ def setup_workshop(
             f"❌ Missing packages: {', '.join(missing)}. "
             "Fix: run cell 0 again; if it still fails, use Runtime → Disconnect and delete runtime."
         )
+    problem = torchcodec_problem()
+    if problem:
+        raise SystemExit(f"❌ {problem}")
     major, minor = (int(x) for x in v["transformers"].split(".")[:2])
     if (major, minor) < (4, 56):
         print(

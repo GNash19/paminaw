@@ -81,6 +81,7 @@ def test_whisper_transcriber_passes_language_and_task(fake_whisper):
     w = asr.WhisperTranscriber("openai/whisper-tiny")
     assert seen["task"] == "automatic-speech-recognition"
     assert seen["device"] == "cpu"
+    assert seen["chunk_length_s"] == 30  # clips longer than 30 s must not crash
     assert w.transcribe(torch.zeros(1, 16_000)) == " Kumusta ka na?"
     inputs, gen = pipe.calls[-1]
     assert gen["language"] == "tagalog" and gen["task"] == "transcribe"

@@ -1,6 +1,7 @@
 """Data loading and the download fallback chain, with no network."""
 
 import io
+import sys
 import zipfile
 
 import pytest
@@ -109,3 +110,9 @@ def test_setup_workshop_stops_with_fix(tmp_path):
 def test_versions_reads_package_metadata():
     # jiwer 4 has no __version__ attribute; cell 0 must still see it as installed.
     assert env.versions()["jiwer"] == "4.0.0"
+
+
+def test_broken_torchcodec_is_reported_with_fix(monkeypatch):
+    monkeypatch.setattr(env.metadata, "version", lambda name: "0.11.0")
+    monkeypatch.setitem(sys.modules, "torchcodec", None)  # makes import torchcodec fail
+    assert "Fix: run `pip uninstall -y torchcodec`" in env.torchcodec_problem()

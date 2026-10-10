@@ -121,6 +121,7 @@ class WhisperTranscriber:
             "automatic-speech-recognition",
             model=resolve_model(model, offline_dir),
             device=self.device,
+            chunk_length_s=30,  # Whisper reads 30 s windows; some FLEURS clips run 31–37 s
             **dtype_kwargs(self.dtype),
             **kwargs,
         )

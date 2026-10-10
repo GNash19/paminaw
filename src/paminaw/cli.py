@@ -39,7 +39,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     """Print versions, device, audio backend and data status; return 1 if something is wrong."""
     from .asr import pick_device_dtype
     from .audio import load_audio
-    from .env import versions
+    from .env import torchcodec_problem, versions
 
     ok = True
     print(f"paminaw {__version__}")
@@ -47,6 +47,10 @@ def cmd_check(args: argparse.Namespace) -> int:
         print(f"  {k:<13}{v}")
     device, dtype = pick_device_dtype()
     print(f"  {'device':<13}{device} ({str(dtype).replace('torch.', '')})")
+    problem = torchcodec_problem()
+    if problem:
+        ok = False
+        print(f"  {'torchcodec':<13}BROKEN. {problem}")
 
     import soundfile as sf
 
