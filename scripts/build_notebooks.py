@@ -952,13 +952,17 @@ WRAP = [
     ),
 ]
 
-NEXT_LAB = md(
-    "next",
-    """
-    **Next:** [02 · Transcribe](02_transcribe.ipynb) · back to the
-    [full workshop notebook](paminaw_workshop.ipynb)
-    """,
-)
+
+def next_lab(target: str, label: str) -> Cell:
+    """A closing cell that links to the next standalone lab."""
+    return md(
+        "next",
+        f"""
+        **Next:** [{label}]({target}) · or open the
+        [full workshop notebook](paminaw_workshop.ipynb)
+        """,
+    )
+
 
 # ---------------------------------------------------------------------------
 # Assembly
@@ -973,11 +977,11 @@ def notebooks(solutions: bool) -> dict[str, list[Cell]]:
         "01_load_and_see.ipynb": title_section(
             sub + "01_load_and_see.ipynb", "Lab 1 · Load & see",
             "Load recordings as tensors, resample, and compute mel spectrograms.", solutions)
-        + SETUP + S1,
+        + SETUP + S1 + [next_lab("02_transcribe.ipynb", "Lab 2 · Transcribe")],
         "02_transcribe.ipynb": title_section(
             sub + "02_transcribe.ipynb", "Lab 2 · Transcribe",
             "Run Whisper (and MMS on a GPU) on Tagalog and Cebuano.", solutions)
-        + SETUP + S2 + S2B,
+        + SETUP + S2 + S2B + [next_lab("03_score.ipynb", "Lab 3 · Score")],
         "03_score.ipynb": title_section(
             sub + "03_score.ipynb", "Lab 3 · Score",
             "WER, CER and the four scoring conventions of the paper.", solutions)

@@ -45,6 +45,13 @@ below have their own licences.
 | `facebook/mms-1b-all` | CC BY-NC 4.0 | CC BY-NC 4.0, non-commercial research use |
 | `facebook/seamless-m4t-v2-large` | CC BY-NC 4.0 | CC BY-NC 4.0, non-commercial research use |
 
+### Exception: `precomputed/whisper-small.csv` (CC BY 4.0)
+
+This file is **not** from the paper. The facilitators generated it on a CPU with
+`scripts/precompute_large.py --system whisper-small`; `whisper-small.json` records the revision
+and settings. Lab 3 uses it when an attendee skipped Lab 2. It is released under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), like the FLEURS audio it transcribes.
+
 The models that attendees run live in the notebooks are `openai/whisper-small`
 (Apache-2.0) and, on GPU runtimes, `facebook/mms-1b-all` (CC BY-NC 4.0). They are
 downloaded from the Hugging Face Hub and are not redistributed here.
