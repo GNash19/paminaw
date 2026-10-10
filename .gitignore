@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Notebooks and local runs
+.ipynb_checkpoints/
+outputs/
+
+# Never commit audio, model weights or archives (they ship as release assets)
+*.wav
+*.flac
+*.zip
+*.parquet
+*.safetensors
+*.bin
+models/
+clips/
+
+# Secrets
+.env
+*.token
