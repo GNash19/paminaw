@@ -115,17 +115,21 @@ def cmd_prepare_offline(args: argparse.Namespace) -> int:
     if zip_src and zip_src.is_file():
         shutil.copy2(zip_src, out / CLIPS_ZIP)
     print(f"✅ clips → {out / 'clips'}")
+    hub_cache = out / "hf_home" / "hub"  # a normal Hugging Face cache; point HF_HOME at hf_home
     for name in args.models:
         spec = OFFLINE_MODELS.get(name, {})
         print(f"⬇️  {name} ...")
         snapshot_download(
             name,
-            local_dir=out / "models" / name.replace("/", "--"),
+            cache_dir=hub_cache,
             allow_patterns=spec.get("allow"),
             ignore_patterns=spec.get("ignore"),
         )
-        print(f"✅ {name} → {out / 'models' / name.replace('/', '--')}")
-    print(f"\nDone. Set PAMINAW_OFFLINE_DIR={out} (see docs/OFFLINE.md).")
+        print(f"✅ {name} → {hub_cache}")
+    print(
+        f"\nDone. Before starting Jupyter set PAMINAW_OFFLINE_DIR={out}, "
+        f"HF_HOME={out / 'hf_home'} and HF_HUB_OFFLINE=1 (see docs/OFFLINE.md)."
+    )
     return 0
 
 

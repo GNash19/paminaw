@@ -1,0 +1,63 @@
+cff-version: 1.2.0
+message: "If you use these workshop materials, please cite them as below, and cite the paper and data release listed under references."
+type: software
+title: "Paminaw! Teaching Machines to Listen in Cebuano and Tagalog: Speech Processing Using PyTorch (PyCon Davao 2026 workshop)"
+version: 1.0.0
+date-released: 2026-10-10
+license: MIT
+repository-code: "https://github.com/GNash19/paminaw"
+authors:
+  - given-names: Nash
+    family-names: Golosino
+    affiliation: University of the Immaculate Conception
+  - given-names: Aurora
+    family-names: Manseras
+    # TODO: add Aurora's GitHub handle (e.g. as `alias:`) once confirmed.
+keywords:
+  - speech recognition
+  - PyTorch
+  - Cebuano
+  - Tagalog
+  - FLEURS
+  - workshop
+references:
+  - type: conference-paper
+    title: "Benchmarking Multilingual ASR for Tagalog and Cebuano Across Scoring Conventions and Language Coverage"
+    authors:
+      - given-names: Nash T.
+        family-names: Golosino
+      - given-names: Ma. Nicole B.
+        family-names: Morales
+      - given-names: Kristine Mae
+        family-names: Adlaon
+    collection-title: "NLPIR 2026"
+    year: 2026
+    institution:
+      name: University of the Immaculate Conception, Davao City, Philippines
+  - type: data
+    title: "Data and Code Release for \"Benchmarking Multilingual ASR for Tagalog and Cebuano Across Scoring Conventions and Language Coverage\" (NLPIR 2026)"
+    authors:
+      - given-names: Nash
+        family-names: Golosino
+      - given-names: Ma. Nicole
+        family-names: Morales
+      - given-names: Kristine Mae
+        family-names: Adlaon
+    year: 2026
+    doi: 10.5281/zenodo.23010849
+    license: CC-BY-NC-4.0
+    publisher:
+      name: Zenodo
+  - type: data
+    title: "FLEURS: Few-shot Learning Evaluation of Universal Representations of Speech"
+    authors:
+      - given-names: Alexis
+        family-names: Conneau
+      - given-names: Min
+        family-names: Ma
+      - given-names: Simran
+        family-names: Khanuja
+      - name: "et al."
+    year: 2023
+    license: CC-BY-4.0
+    url: "https://huggingface.co/datasets/google/fleurs"

@@ -31,14 +31,6 @@ def test_dtype_kwargs_follows_transformers_version(monkeypatch, version, key):
     assert asr.dtype_kwargs(torch.float16) == {key: torch.float16}
 
 
-def test_resolve_model_prefers_offline_copy(tmp_path):
-    local = tmp_path / "models" / "openai--whisper-small"
-    local.mkdir(parents=True)
-    assert asr.resolve_model("openai/whisper-small", tmp_path) == "openai/whisper-small"
-    (local / "config.json").write_text("{}")
-    assert asr.resolve_model("openai/whisper-small", tmp_path) == str(local)
-
-
 def test_to_array_shapes():
     assert asr.to_array(torch.zeros(1, 160)).shape == (160,)
     assert asr.to_array(np.zeros((2, 160))).shape == (160,)

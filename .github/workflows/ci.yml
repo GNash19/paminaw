@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff==0.17.0
+      - run: ruff check .
+      - run: ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    env:
+      HF_HUB_OFFLINE: "1"  # tests never download models or datasets
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install CPU PyTorch
+        run: pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+      - name: Install paminaw
+        run: pip install -e ".[dev]"
+      - name: Run tests
+        run: pytest
+      - name: Check the package builds with its data files
+        run: |
+          pip install build
+          python -m build --wheel
+          python -m zipfile -l dist/*.whl | grep -E "paminaw/_data/(subset_manifest.csv|precomputed/mms-1b-all.csv)"
