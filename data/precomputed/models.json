@@ -1,0 +1,58 @@
+{
+  "source": {
+    "doi": "https://doi.org/10.5281/zenodo.23010849",
+    "archive_file": "NJ105_release_v2.zip",
+    "archive_sha256": "08aa5ca2e484d47e280d8b7b96df9b8cd42c08c401376e981d4aa8fadacb2d6a",
+    "licence": "CC BY-NC 4.0"
+  },
+  "note": "Hypotheses are unnormalised, exactly as stored in the release. Rows follow data/subset_manifest.csv (lang, draw_order).",
+  "inference": {
+    "transformers": "4.44.2",
+    "torch": "2.11.0+cu128",
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "seed": 20260814,
+    "max_new_tokens_autoregressive": 256,
+    "batch": "one utterance per forward pass"
+  },
+  "systems": {
+    "Whisper large-v3": {
+      "file": "whisper-large-v3.csv",
+      "hf_model": "openai/whisper-large-v3",
+      "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+      "revision_date": "2024-08-12 10:20:10+00:00",
+      "precision": "float16",
+      "condition": "language-committed: language='tl' for both splits (Whisper has no Cebuano token); byte-identical to the language-agnostic run",
+      "archive_runs": [
+        "whisper__filipino__committed",
+        "whisper__cebuano__committed"
+      ],
+      "rows": 200
+    },
+    "MMS-1B-all": {
+      "file": "mms-1b-all.csv",
+      "hf_model": "facebook/mms-1b-all",
+      "revision": "3d33597edbdaaba14a8e858e2c8caa76e3cec0cd",
+      "revision_date": "2023-06-15 10:45:44+00:00",
+      "precision": "float32",
+      "condition": "matched adapter: 'tgl' for Tagalog, 'ceb' for Cebuano",
+      "archive_runs": [
+        "mms__filipino__matched",
+        "mms__cebuano__matched"
+      ],
+      "rows": 200
+    },
+    "SeamlessM4T v2 Large": {
+      "file": "seamless-m4t-v2-large.csv",
+      "hf_model": "facebook/seamless-m4t-v2-large",
+      "revision": "5f8cc790b19fc3f67a61c105133b20b34e3dcb76",
+      "revision_date": "2024-01-04 12:48:26+00:00",
+      "precision": "float16",
+      "condition": "matched target language: tgt_lang 'tgl' / 'ceb'",
+      "archive_runs": [
+        "seamless__filipino__matched",
+        "seamless__cebuano__matched"
+      ],
+      "rows": 200
+    }
+  }
+}
