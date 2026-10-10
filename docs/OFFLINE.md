@@ -9,7 +9,7 @@ laptop that already has Python.
 
 ```
 D:\
-├── paminaw\                     the repository, cloned at tag v1.0.0
+├── paminaw\                     a clone of the repository (git clone, main branch)
 └── paminaw_offline\
     ├── paminaw_clips_v1.zip     the 200 clips (172 MB), same file as the GitHub release asset
     ├── clips\fil_ph\*.wav       … already unzipped (100 Tagalog)
@@ -67,16 +67,20 @@ On a computer with internet, from the repository folder:
 pip install -e ".[dev]"
 # 1. clips + model weights (about 5 GB in total)
 paminaw prepare-offline --out D:/paminaw_offline --clips-zip path/to/paminaw_clips_v1.zip
-# 2. wheels for the laptops you expect (one line per Python version / OS you need)
-pip download -d D:/paminaw_offline/wheels -r constraints/colab-2026-10.txt jiwer==4.0.0 \
-    soundfile pyarrow ruff==0.17.0 pytest nbclient nbformat ipykernel notebook hatchling \
-    --extra-index-url https://download.pytorch.org/whl/cpu
+# 2. wheels: run once per (platform, Python version) you expect on attendee laptops
+pip download -d D:/paminaw_offline/wheels -r constraints/offline-wheels.txt \
+    --only-binary=:all: --platform win_amd64 --python-version 3.13
 # 3. the repository itself
-git clone --branch v1.0.0 https://github.com/GNash19/paminaw.git D:/paminaw
+git clone https://github.com/GNash19/paminaw.git D:/paminaw
 ```
 
-`pip download` fetches wheels for the Python version and operating system it runs on. To cover
-other laptops, add `--python-version 3.12 --platform win_amd64 --only-binary=:all:` (or
-`macosx_11_0_arm64`, `manylinux2014_x86_64`) and run it once per combination.
+The drive prepared for PyCon Davao 2026 has wheels for **Windows (x86-64) and macOS (Apple
+Silicon), each for Python 3.12 and 3.13**. For other laptops, repeat step 2 with
+`--platform manylinux2014_x86_64`, `macosx_10_15_x86_64`, or another `--python-version`.
+
+**Git on an exFAT drive.** exFAT does not record file owners, so git refuses to work inside
+`D:\paminaw` ("dubious ownership"). Copy the folder to the laptop first, or run
+`git config --global --add safe.directory D:/paminaw` once on that laptop. The notebooks and
+`pip install` work either way; only `git` commands are affected.
 
 The scripts `scripts/prepare_offline.py` and `paminaw prepare-offline` do the same job.
