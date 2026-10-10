@@ -1,8 +1,8 @@
-"""Cache the clips and model weights in one folder for the workshop's external drive.
+"""Cache the clips and model weights in one folder for offline use.
 
 A thin wrapper around ``paminaw prepare-offline`` (see ``docs/OFFLINE.md``)::
 
-    python scripts/prepare_offline.py --out D:/paminaw_offline --clips-zip paminaw_clips_v1.zip
+    python scripts/prepare_offline.py --out paminaw_offline
 """
 
 from __future__ import annotations

@@ -69,8 +69,7 @@ jupyter notebook notebooks/paminaw_workshop.ipynb
 
 On a laptop without FFmpeg, do **not** install `torchcodec`. `paminaw` reads audio with
 `soundfile` instead, and `paminaw check` warns you if a broken `torchcodec` would stop Whisper
-from running. To run with **no internet** from the workshop's external drive, see
-[docs/OFFLINE.md](docs/OFFLINE.md).
+from running. To run with **no internet at all**, see [docs/OFFLINE.md](docs/OFFLINE.md).
 
 ## Repository map
 
@@ -86,7 +85,7 @@ src/paminaw/                        the small helper package the notebooks insta
 data/subset_manifest.csv            which FLEURS clips we use, with reference text (no audio)
 data/precomputed/                   the paper's model outputs for those clips (CC BY-NC 4.0)
 scripts/                            how the subset, the precomputed files and the notebooks are made
-docs/                               attendee setup, facilitator guide, offline guide
+docs/                               before-the-workshop setup, running without internet
 tests/                              offline tests (pytest), run on every push
 ```
 

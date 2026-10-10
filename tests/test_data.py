@@ -57,7 +57,7 @@ def test_offline_zip_is_extracted_to_cache(offline_dir, tmp_path_factory):
 
 
 def test_incomplete_offline_dir_explains_fix(tmp_path):
-    with pytest.raises(PaminawDataError, match="Fix: copy the paminaw folder"):
+    with pytest.raises(PaminawDataError, match="Fix: run `paminaw prepare-offline`"):
         ensure_clips(offline_dir=tmp_path)
 
 

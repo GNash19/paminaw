@@ -13,8 +13,9 @@ Usage::
     python scripts/build_notebooks.py                     # write notebooks without outputs
     python scripts/build_notebooks.py --execute           # write, run and save outputs
     python scripts/build_notebooks.py --execute --smoke   # 2 clips, whisper-tiny, no MMS
-    python scripts/build_notebooks.py --execute --graft-2b colab_t4_run.ipynb
-        # keep Lab 2b outputs from a real GPU run (cells tagged "lab2b")
+    python scripts/build_notebooks.py --keep-outputs      # new sources, saved outputs kept
+    python scripts/build_notebooks.py --keep-outputs --graft-2b colab_t4_run.ipynb
+        # copy Lab 2b outputs from a real GPU run (cells tagged "lab2b")
 """
 
 from __future__ import annotations
@@ -162,7 +163,7 @@ SETUP = [
         import sys
 
         PAMINAW_REF = "{TAG}"  # the workshop release on GitHub
-        SMOKE_TEST = os.environ.get("PAMINAW_SMOKE") == "1"  # facilitators: 2 clips, whisper-tiny
+        SMOKE_TEST = os.environ.get("PAMINAW_SMOKE") == "1"  # quick test mode: 2 clips, whisper-tiny
 
         if "google.colab" in sys.modules:
             print(f"Installing paminaw {{PAMINAW_REF}} ...")
@@ -692,12 +693,12 @@ S3 = [
         if MINE.exists():
             mine = pd.read_csv(MINE, keep_default_na=False)
             source = "your Lab 2 run"
-        else:  # skipped Lab 2: use the facilitators' Whisper-small run on the same clips
+        else:  # skipped Lab 2: use a ready-made Whisper-small run on the same clips
             n = 2 if SMOKE_TEST else 20
             mine = pd.read_csv(paminaw.data.data_file("precomputed/whisper-small.csv"),
                                keep_default_na=False).rename(columns={"hypothesis_raw": "hypothesis"})
             mine = mine.groupby("lang").head(n)
-            source = "the facilitators' Whisper-small run (you skipped Lab 2)"
+            source = "a ready-made Whisper-small run (you skipped Lab 2)"
         n_mine = mine.groupby("lang").size().min()
         print(f"Whisper-small outputs: {len(mine)} clips from {source}.")
         """.replace("\n        ", "\n"),
@@ -1029,6 +1030,24 @@ def execute(path: Path, timeout: int) -> dict[str, float]:
     return per_section
 
 
+def carry_outputs(nb, old_path: Path) -> int:
+    """Copy saved outputs from the notebook at ``old_path`` into ``nb``, matching code cells by id."""
+    if not old_path.is_file():
+        return 0
+    old_nb = nbformat.read(old_path, as_version=4)
+    for key in ("widgets", "language_info"):  # saved widget views and kernel info belong to outputs
+        if key in old_nb.metadata:
+            nb.metadata[key] = old_nb.metadata[key]
+    old = {c.id: c for c in old_nb.cells if c.cell_type == "code"}
+    n = 0
+    for cell in nb.cells:
+        if cell.cell_type == "code" and cell.id in old:
+            cell.outputs = old[cell.id].outputs
+            cell.execution_count = old[cell.id].execution_count
+            n += 1
+    return n
+
+
 def graft(path: Path, donor: Path) -> int:
     """Copy outputs of cells tagged ``lab2b`` from ``donor`` into ``path``, matching by cell id."""
     nb, src = nbformat.read(path, as_version=4), nbformat.read(donor, as_version=4)
@@ -1050,6 +1069,9 @@ def main() -> None:
     ap.add_argument("--smoke", action="store_true", help="2 clips, whisper-tiny, MMS skipped")
     ap.add_argument("--only", nargs="*", default=None, help="notebook file names to build")
     ap.add_argument("--graft-2b", type=Path, default=None, help="executed notebook from a GPU run")
+    ap.add_argument(
+        "--keep-outputs", action="store_true", help="rebuild sources but keep saved outputs"
+    )
     ap.add_argument("--timeout", type=int, default=3600)
     ap.add_argument("--timings", type=Path, default=None, help="write per-section seconds as JSON")
     args = ap.parse_args()
@@ -1065,17 +1087,19 @@ def main() -> None:
                 continue
             path = NB_DIR / ("solutions" if solutions else "") / name
             path.parent.mkdir(parents=True, exist_ok=True)
-            nbformat.write(build(cells, solutions), path)
+            nb = build(cells, solutions)
+            kept = carry_outputs(nb, path) if args.keep_outputs else 0
+            nbformat.write(nb, path)
             rel = path.relative_to(ROOT).as_posix()
             if args.execute:
                 t0 = time.perf_counter()
                 per = execute(path, args.timeout)
                 timings[rel] = {k: round(v, 1) for k, v in per.items()}
                 print(f"ran {rel} in {time.perf_counter() - t0:.0f} s · per section {timings[rel]}")
-                if args.graft_2b and name in ("paminaw_workshop.ipynb", "02_transcribe.ipynb"):
-                    print(f"   grafted {graft(path, args.graft_2b)} Lab 2b cell(s)")
             else:
-                print(f"wrote {rel}")
+                print(f"wrote {rel}" + (f" (kept outputs of {kept} cells)" if kept else ""))
+            if args.graft_2b and name in ("paminaw_workshop.ipynb", "02_transcribe.ipynb"):
+                print(f"   grafted {graft(path, args.graft_2b)} Lab 2b cell(s)")
     if args.timings:
         args.timings.write_text(json.dumps(timings, indent=2) + "\n", encoding="utf-8")
 

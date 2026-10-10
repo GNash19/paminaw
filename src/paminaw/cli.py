@@ -25,7 +25,7 @@ from .data import (
     load_precomputed,
 )
 
-#: Models the USB drive carries, with the files each one needs.
+#: Models an offline folder carries, with the files each one needs.
 OFFLINE_MODELS: dict[str, dict[str, list[str]]] = {
     "openai/whisper-small": {"ignore": ["*.bin", "*.h5", "*.msgpack", "*.onnx"]},
     "openai/whisper-tiny": {"ignore": ["*.bin", "*.h5", "*.msgpack", "*.onnx"]},
@@ -80,7 +80,7 @@ def cmd_check(args: argparse.Namespace) -> int:
             ok = False
             print(
                 f"  {'release zip':<13}NOT reachable ({err}). "
-                "Fix: check internet or use the USB copy."
+                "Fix: check internet or use an offline folder (docs/OFFLINE.md)."
             )
     return 0 if ok else 1
 
@@ -108,7 +108,7 @@ def cmd_score(args: argparse.Namespace) -> int:
 
 
 def cmd_prepare_offline(args: argparse.Namespace) -> int:
-    """Copy the clips zip, the clips and model weights into one folder for the USB drive."""
+    """Copy the clips zip, the clips and model weights into one folder for offline use."""
     from huggingface_hub import snapshot_download
 
     out = Path(args.out)
@@ -156,7 +156,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--out", default=None, help="optional CSV for the tidy scores")
     s.set_defaults(func=cmd_score)
 
-    o = sub.add_parser("prepare-offline", help="cache clips and model weights for the USB drive")
+    o = sub.add_parser("prepare-offline", help="cache clips and model weights for offline use")
     o.add_argument("--out", required=True, help="folder to fill, e.g. E:/paminaw_offline")
     o.add_argument("--models", nargs="*", default=list(OFFLINE_MODELS), help="Hub model names")
     o.add_argument("--clips-zip", default=None, help=f"path to {CLIPS_ZIP} to copy as well")

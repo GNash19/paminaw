@@ -13,7 +13,7 @@ themselves a seeded random sample of size *n*. Scores on these clips are
 How the audio is obtained (first match wins)
 --------------------------------------------
 1. ``offline_dir`` (or the ``PAMINAW_OFFLINE_DIR`` environment variable): a
-   folder that holds ``clips/`` or ``paminaw_clips_v1.zip``, e.g. the USB drive.
+   folder that holds ``clips/`` or ``paminaw_clips_v1.zip`` (see docs/OFFLINE.md).
 2. ``cache_dir`` (default ``~/.cache/paminaw`` or ``PAMINAW_CACHE``), if a
    previous run already put the clips there.
 3. The release asset ``paminaw_clips_v1.zip`` on GitHub (172 MB): the
@@ -200,7 +200,7 @@ def _extract_from_fleurs_parquet(cache_dir: Path, manifest: pd.DataFrame) -> Non
             if ids[int(idx)] != int(fleurs_id):
                 raise PaminawDataError(
                     f"FLEURS row {idx} of {config} is no longer sentence {fleurs_id}. "
-                    "Fix: use the GitHub release zip or the USB drive instead of the Hub fallback."
+                    "Fix: use the GitHub release zip or an offline folder instead."
                 )
             audio = table.column("audio")[int(idx)].as_py()
             (out_dir / str(filename)).write_bytes(audio["bytes"])
@@ -229,7 +229,7 @@ def ensure_clips(
                 return cache
         raise PaminawDataError(
             f"The offline folder {offline} has no complete clips/ folder or {CLIPS_ZIP}. "
-            "Fix: copy the paminaw folder from the USB drive again (see docs/OFFLINE.md)."
+            "Fix: run `paminaw prepare-offline` for that folder again (see docs/OFFLINE.md)."
         )
 
     cache = Path(cache_dir) if cache_dir else default_cache_dir()
@@ -254,7 +254,7 @@ def ensure_clips(
         errors.append(f"Hugging Face Hub: {err}")
     raise PaminawDataError(
         "Could not get the workshop clips (" + "; ".join(errors) + "). "
-        "Fix: check that this runtime has internet, or point PAMINAW_OFFLINE_DIR at the USB copy."
+        "Fix: check this runtime's internet, or set PAMINAW_OFFLINE_DIR to an offline folder."
     )
 
 

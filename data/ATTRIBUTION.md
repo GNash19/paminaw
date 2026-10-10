@@ -47,7 +47,7 @@ below have their own licences.
 
 ### Exception: `precomputed/whisper-small.csv` (CC BY 4.0)
 
-This file is **not** from the paper. The facilitators generated it on a CPU with
+This file is **not** from the paper. The workshop authors generated it on a CPU with
 `scripts/precompute_large.py --system whisper-small`; `whisper-small.json` records the revision
 and settings. Lab 3 uses it when an attendee skipped Lab 2. It is released under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), like the FLEURS audio it transcribes.
