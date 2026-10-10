@@ -167,6 +167,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     """Entry point for the ``paminaw`` console script."""
+    for stream in (sys.stdout, sys.stderr):  # old Windows consoles cannot print emoji
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(errors="replace")
     args = build_parser().parse_args(argv)
     try:
         return int(args.func(args))
