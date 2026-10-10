@@ -75,7 +75,8 @@ git clone https://github.com/GNash19/paminaw.git D:/paminaw
 ```
 
 The drive prepared for PyCon Davao 2026 has wheels for **Windows (x86-64) and macOS (Apple
-Silicon), each for Python 3.12 and 3.13**. For other laptops, repeat step 2 with
+Silicon, macOS 12 or newer), each for Python 3.12 and 3.13** (macOS wheels were fetched with
+`--platform macosx_14_0_arm64`). For other laptops, repeat step 2 with
 `--platform manylinux2014_x86_64`, `macosx_10_15_x86_64`, or another `--python-version`.
 
 **Git on an exFAT drive.** exFAT does not record file owners, so git refuses to work inside
