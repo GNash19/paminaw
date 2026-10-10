@@ -252,10 +252,8 @@ S1 = [
 
         try:
             wav, sr = torchaudio.load(path)  # file → tensor + sample rate
-        except Exception:  # torchaudio.load needs TorchCodec + FFmpeg
-            print("ℹ️ torchaudio.load is not available here, so we use paminaw.load_audio "
-                  "(same result).")
-            wav, sr = paminaw.load_audio(path)
+        except Exception:  # torchaudio.load needs TorchCodec + FFmpeg (Colab has both)
+            wav, sr = paminaw.load_audio(path)  # same result, via soundfile
 
         wav = wav.mean(dim=0, keepdim=True)  # stereo → mono, shape (1, samples)
         if sr != 16_000:
@@ -316,7 +314,7 @@ S1 = [
         """
         **Answer.** Pauses show up as flat stretches near zero, mostly between phrases and at the
         start and end of the recording. The length depends on the sentence and on the speaker;
-        FLEURS sentences are read aloud, so they come out at roughly 10–25 seconds.
+        In our subset the clips run from about 6 to 37 seconds, most of them 10–25 seconds.
         """,
         only="solution",
     ),
@@ -436,16 +434,18 @@ S2 = [
 
         import pandas as pd
         import torch
+        import transformers
         from transformers import pipeline
 
         from paminaw.asr import pick_device_dtype
 
+        transformers.logging.set_verbosity_error()  # hide library warnings; real errors still show
         SMOKE_TEST = os.environ.get("PAMINAW_SMOKE") == "1"
         paminaw.set_seed()
         device, dtype = pick_device_dtype()  # ("cuda", float16) on a GPU, ("cpu", float32) otherwise
         WHISPER_MODEL = "openai/whisper-tiny" if SMOKE_TEST else "openai/whisper-small"
 
-        # 👉 The one number to change: clips per language. 20 on CPU (~5 min), all 100 on a GPU.
+        # 👉 The one number to change: clips per language. 20 on CPU (about 10 minutes), 100 on a GPU.
         N_CLIPS = 2 if SMOKE_TEST else (100 if device == "cuda" else 20)
 
         tl = paminaw.load_subset("tagalog", n=N_CLIPS)
@@ -499,9 +499,10 @@ S2 = [
                 rows.append({"lang": lang, "idx": c.idx, "fleurs_id": c.fleurs_id,
                              "hypothesis": text, "reference": c.transcription})
                 audio_seconds += c.duration_s
-                print(f"\\r{lang}: {len(rows)} clips done", end="")
+                if len(rows) % 10 == 0 or len(rows) == 2 * N_CLIPS:
+                    print(f"{len(rows)} of {2 * N_CLIPS} clips done ({time.perf_counter() - t0:.0f} s)")
         seconds = time.perf_counter() - t0
-        print(f"\\nTranscribed {audio_seconds / 60:.1f} min of audio in {seconds:.0f} s "
+        print(f"Transcribed {audio_seconds / 60:.1f} min of audio in {seconds:.0f} s "
               f"(real-time factor {seconds / audio_seconds:.2f}).")
 
         mine = pd.DataFrame(rows)
@@ -603,8 +604,10 @@ S2B = [
         + """
         import pandas as pd
         import torch
+        import transformers
         from transformers import AutoProcessor, Wav2Vec2ForCTC
 
+        transformers.logging.set_verbosity_error()  # hide library warnings; real errors still show
         SMOKE_TEST = os.environ.get("PAMINAW_SMOKE") == "1"
         paminaw.set_seed()
         RUN_MMS = torch.cuda.is_available() and not SMOKE_TEST
