@@ -62,7 +62,7 @@ You need Python 3.10 or newer.
 ```bash
 git clone https://github.com/GNash19/paminaw.git
 cd paminaw
-pip install -e ".[dev]"
+pip install -e ".[dev]" notebook
 paminaw check
 jupyter notebook notebooks/paminaw_workshop.ipynb
 ```

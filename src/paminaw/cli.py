@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import sys
 import tempfile
@@ -62,9 +63,14 @@ def cmd_check(args: argparse.Namespace) -> int:
 
     print(f"  {'manifest':<13}{len(load_manifest())} clips")
     print(f"  {'precomputed':<13}{len(load_precomputed())} hypotheses")
+    offline = os.environ.get("PAMINAW_OFFLINE_DIR")
+    if offline:
+        found = (Path(offline) / "clips").is_dir() or (Path(offline) / CLIPS_ZIP).is_file()
+        print(f"  {'offline dir':<13}{offline} ({'clips found' if found else 'NO clips found'})")
+        ok = ok and found
     cache = Path(args.cache_dir) if args.cache_dir else default_cache_dir()
-    have = (cache / "clips").is_dir()
-    print(f"  {'clips cache':<13}{cache} ({'present' if have else 'not downloaded yet'})")
+    have = (cache / "clips").is_dir() or bool(offline)
+    print(f"  {'clips cache':<13}{cache} ({'present' if (cache / 'clips').is_dir() else 'empty'})")
     if not args.offline and not have:
         try:
             req = urllib.request.Request(CLIPS_URL, method="HEAD")
