@@ -4,7 +4,7 @@
 transcribe it with open speech-recognition models, and learn why the way you score a transcript
 can change which model looks best.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/GNash19/paminaw/blob/v1.0.0/notebooks/paminaw_workshop.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1R6TZblgLci1uVoVb6gvvi-m8asAEIoBJ#scrollTo=s0-setup)
 [![CI](https://github.com/GNash19/paminaw/actions/workflows/ci.yml/badge.svg)](https://github.com/GNash19/paminaw/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23010849.svg)](https://doi.org/10.5281/zenodo.23010849)
