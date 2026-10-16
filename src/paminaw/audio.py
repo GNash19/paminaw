@@ -76,7 +76,7 @@ def load_audio(path: str | Path) -> tuple[torch.Tensor, int]:
             ) from sf_err
         if not _backend_note_shown:
             print(
-                "ℹ️  torchaudio.load is not available here (it needs TorchCodec + FFmpeg), "
+                "Note: torchaudio.load is not available here (it needs TorchCodec + FFmpeg), "
                 "so paminaw is reading audio with soundfile instead. Results are identical."
             )
             _backend_note_shown = True

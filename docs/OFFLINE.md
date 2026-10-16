@@ -50,7 +50,7 @@ You need **Python 3.10–3.13** already installed. Below, `OFFLINE` is the path 
    ```
 
    Cell 0 skips the Colab-only install step, finds the clips in the folder and prints
-   **✅ READY**. Whisper and MMS load from `hf_home` without downloading anything.
+   **READY**. Whisper and MMS load from `hf_home` without downloading anything.
 
 **Do not install `torchcodec` unless FFmpeg is installed.** `transformers` imports TorchCodec
 whenever it is present, and without FFmpeg that import crashes every Whisper call. `paminaw`

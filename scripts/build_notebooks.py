@@ -150,7 +150,7 @@ SETUP = [
         ## 0 · Setup: run me first
 
         This cell installs the workshop package `paminaw`, prints the versions of the libraries we
-        use, checks for a GPU and downloads the 200 audio clips. Wait for the **✅ READY** line
+        use, checks for a GPU and downloads the 200 audio clips. Wait for the **READY** line
         (about a minute). If something fails, the message tells you how to fix it.
         """,
     ),
@@ -172,12 +172,12 @@ SETUP = [
                                capture_output=True, text=True)
             if r.returncode != 0:
                 print(r.stderr[-1500:])
-                raise SystemExit("❌ Could not install paminaw. Fix: check that Colab says "
+                raise SystemExit("Error: Could not install paminaw. Fix: check that Colab says "
                                  "'Connected' (top right), then run this cell again.")
         try:
             import paminaw
         except ModuleNotFoundError:
-            raise SystemExit("❌ paminaw is not installed. Fix: outside Colab, run "
+            raise SystemExit("Error: paminaw is not installed. Fix: outside Colab, run "
                              "`pip install -e .` in the repo folder (see docs/OFFLINE.md).") from None
 
         SETUP = paminaw.setup_workshop(smoke=SMOKE_TEST)
@@ -191,7 +191,7 @@ import os
 try:
     import paminaw
 except ModuleNotFoundError:
-    raise SystemExit("❌ Run cell 0 (Setup) at the top of the notebook first.") from None
+    raise SystemExit("Error: Run cell 0 (Setup) at the top of the notebook first.") from None
 """
 
 # ---------------------------------------------------------------------------
@@ -277,16 +277,16 @@ S1 = [
     md(
         "s1-ex1-md",
         """
-        ### ✏️ Exercise 1 · Plot one Tagalog and one Cebuano waveform
+        ### Exercise 1 · Plot one Tagalog and one Cebuano waveform
 
-        Change `CLIP` to look at other recordings. 🤔 Can you see the pauses between phrases?
+        Change `CLIP` to look at other recordings. **Question:** Can you see the pauses between phrases?
         Which recording is longer?
         """,
     ),
     code(
         "s1-ex1",
         """
-        CLIP = 0  # 👉 try another number (0–99)
+        CLIP = 0  # try another number (0–99)
 
         wav_tl = paminaw.load_16k_mono(tl.path[CLIP])
         wav_ceb = paminaw.load_16k_mono(ceb.path[CLIP])
@@ -322,10 +322,10 @@ S1 = [
     md(
         "s1-ex2-md",
         """
-        ### 🎧 Exercise 2 · Listen at 16 kHz and at 8 kHz
+        ### Exercise 2 · Listen at 16 kHz and at 8 kHz
 
         Put your earphones on. Telephone audio is often 8 kHz: half as many samples, and nothing
-        above 4 kHz survives. 🤔 Which sounds change the most?
+        above 4 kHz survives. **Question:** Which sounds change the most?
         """,
     ),
     code(
@@ -353,10 +353,10 @@ S1 = [
     md(
         "s1-ex3-md",
         """
-        ### ✏️ Exercise 3 · Compare their mel spectrograms
+        ### Exercise 3 · Compare their mel spectrograms
 
         We resample the 8 kHz clip back to 16 kHz, so both pictures have the same axes.
-        🤔 What happened to the top of the picture?
+        **Question:** What happened to the top of the picture?
         """,
     ),
     code(
@@ -446,7 +446,7 @@ S2 = [
         device, dtype = pick_device_dtype()  # ("cuda", float16) on a GPU, ("cpu", float32) otherwise
         WHISPER_MODEL = "openai/whisper-tiny" if SMOKE_TEST else "openai/whisper-small"
 
-        # 👉 The one number to change: clips per language. 20 on CPU (about 10 minutes), 100 on a GPU.
+        # The one number to change: clips per language. 20 on CPU (about 10 minutes), 100 on a GPU.
         N_CLIPS = 2 if SMOKE_TEST else (100 if device == "cuda" else 20)
 
         tl = paminaw.load_subset("tagalog", n=N_CLIPS)
@@ -516,9 +516,9 @@ S2 = [
     md(
         "s2-ex4-md",
         """
-        ### ✏️ Exercise 4 · Which language does Whisper hear?
+        ### Exercise 4 · Which language does Whisper hear?
 
-        Remove the language hint on a Cebuano clip and let Whisper decide. 🤔 Before you run it:
+        Remove the language hint on a Cebuano clip and let Whisper decide. **Before you run it:**
         what do you expect it to detect? Then read the **language token** Whisper chose.
         """,
     ),
@@ -631,9 +631,9 @@ S2B = [
                     ids = torch.argmax(logits, dim=-1)[0]  # best letter per 20 ms frame
                     rows.append({"lang": lang, "idx": c.idx, "hypothesis": processor.decode(ids)})
             mms_out = pd.DataFrame(rows)
-            print(f"✅ MMS ran live on {torch.cuda.get_device_name(0)} for {len(mms_out)} clips.")
+            print(f"MMS ran live on {torch.cuda.get_device_name(0)} for {len(mms_out)} clips.")
         else:
-            print("ℹ️ No GPU (or smoke test): loading the paper's precomputed MMS-1B-all outputs "
+            print("Note: no GPU (or smoke test): loading the paper's precomputed MMS-1B-all outputs "
                   "for the same clips instead.")
             pre = paminaw.load_precomputed("MMS-1B-all")
             keys = pd.concat(clips.values())[["lang", "idx"]]
@@ -706,7 +706,7 @@ S3 = [
     md(
         "s3-ex5-md",
         """
-        ### ✏️ Exercise 5 · Write `normalize()` yourself
+        ### Exercise 5 · Write `normalize()` yourself
 
         The paper's **primary** convention has four steps:
         1. Unicode **NFC** (so `ñ` is always one character, never `n` + a separate tilde)
@@ -757,7 +757,7 @@ S3 = [
         for ex in examples:
             ok = normalize(ex) == paminaw.normalize(ex, "primary")
             hint = "" if ok else f"   (expected {paminaw.normalize(ex)!r})"
-            print("✅" if ok else "❌", f"{ex!r:34} → {normalize(ex)!r}{hint}")
+            print("PASS" if ok else "FAIL", f"{ex!r:34} → {normalize(ex)!r}{hint}")
         print("\\nFrom here on we use paminaw.normalize, which also has the other three conventions.")
         """,
     ),
@@ -860,9 +860,9 @@ S3 = [
     md(
         "s3-ex6-md",
         """
-        ### ✏️ Exercise 6 · Does the ranking change?
+        ### Exercise 6 · Does the ranking change?
 
-        Rank 1 = lowest WER. Look along each language. 🤔 Under which convention would you pick a
+        Rank 1 = lowest WER. Look along each language. **Question:** Under which convention would you pick a
         different "best" model for Tagalog? Is any result on Cebuano robust to every convention?
         """,
     ),

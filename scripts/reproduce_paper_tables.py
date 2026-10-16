@@ -73,7 +73,7 @@ def main() -> int:
             with zf.open(f"hypotheses/{run.format(lang=archive_lang)}.jsonl") as f:
                 hyps = pd.read_json(f, lines=True, dtype={"hypothesis_raw": str})
             if len(hyps) != len(refs) or (refs["id"].to_numpy() != hyps["utt_id"].to_numpy()).any():
-                print(f"❌ {system}/{lang}: idx ↔ FLEURS id join failed")
+                print(f"Error: {system}/{lang}: idx ↔ FLEURS id join failed")
                 return 1
             ref, hyp = refs["transcription"].tolist(), hyps["hypothesis_raw"].fillna("").tolist()
             df = score_conventions(ref, hyp)
@@ -85,21 +85,22 @@ def main() -> int:
                 paper = PAPER_TABLE3_WER[(system, lang)][conv]
                 ok = abs(round(w, 2) - paper) <= TOL
                 mismatches += not ok
-                rows.append([system, lang, f"WER {conv}", round(w, 2), paper, "✓" if ok else "✗"])
+                match = "yes" if ok else "NO"
+                rows.append([system, lang, f"WER {conv}", round(w, 2), paper, match])
             for metric in ("cer", "mer"):
                 paper = PAPER_TABLE4_PRIMARY[(system, lang)][metric]
                 val = round(float(primary[metric]), 2)
                 ok = abs(val - paper) <= TOL
                 mismatches += not ok
                 rows.append(
-                    [system, lang, f"{metric.upper()} primary", val, paper, "✓" if ok else "✗"]
+                    [system, lang, f"{metric.upper()} primary", val, paper, "yes" if ok else "NO"]
                 )
             rows.append([system, lang, "CER primary, jiwer default (spaces)", round(cer_spaces, 2),
                          None, "(not in paper)"])  # fmt: skip
     out = pd.DataFrame(rows, columns=["system", "lang", "metric", "this code", "paper", "match"])
     with pd.option_context("display.max_rows", None, "display.width", 140):
         print(out.to_string(index=False))
-    n = (out["match"] == "✓").sum()
+    n = (out["match"] == "yes").sum()
     print(f"\n{n} of {n + mismatches} paper values reproduced exactly (to two decimals).")
     return 0 if mismatches == 0 else 1
 

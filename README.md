@@ -16,7 +16,7 @@ Ateneo de Davao University · Facilitators: **Nash Golosino** and **Aurora Manse
 
 1. **Open the notebook in Colab:** click the **Open in Colab** badge above (or scan the QR code on
    the slides). Sign in with your Google account.
-2. **Run cell 0:** click into it and press **Shift+Enter**. Wait for **✅ READY** (about a
+2. **Run cell 0:** click into it and press **Shift+Enter**. Wait for **READY** (about a
    minute). If something goes wrong, the message tells you how to fix it.
 3. **Follow the sections:** Lab 1 → Lab 2 → Lab 3, top to bottom. Each lab starts with its own
    setup cell, so you can jump ahead if you fall behind.

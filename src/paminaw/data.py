@@ -159,7 +159,7 @@ def _sha256(path: Path) -> str:
 def _download_release_zip(cache_dir: Path) -> None:
     cache_dir.mkdir(parents=True, exist_ok=True)
     tmp = cache_dir / (CLIPS_ZIP + ".part")
-    print(f"⬇️  Downloading the 200 workshop clips (172 MB) from {CLIPS_URL} ...")
+    print(f"Downloading the 200 workshop clips (172 MB) from {CLIPS_URL} ...")
     with urllib.request.urlopen(CLIPS_URL, timeout=60) as resp, open(tmp, "wb") as out:
         shutil.copyfileobj(resp, out, length=1 << 20)
     if _sha256(tmp) != CLIPS_SHA256:
@@ -183,7 +183,7 @@ def _extract_from_fleurs_parquet(cache_dir: Path, manifest: pd.DataFrame) -> Non
             "Fix: run `pip install pyarrow huggingface_hub`."
         ) from err
     for config, rows in manifest.groupby("fleurs_config"):
-        print(f"⬇️  Fallback: downloading FLEURS {config} test Parquet (0.5–1.1 GB, be patient) ...")
+        print(f"Fallback: downloading FLEURS {config} test Parquet (0.5–1.1 GB, be patient) ...")
         local = hf_hub_download(
             FLEURS_REPO,
             f"parquet-data/{config}/test-00000-of-00001.parquet",
@@ -244,7 +244,7 @@ def ensure_clips(
         errors.append("release zip downloaded but some clips were missing")
     except Exception as err:  # network, HTTP 404, corrupt zip
         errors.append(f"GitHub release: {err}")
-        print(f"⚠️  GitHub download failed ({err}); trying the Hugging Face Hub instead.")
+        print(f"Warning: GitHub download failed ({err}); trying the Hugging Face Hub instead.")
     try:
         _extract_from_fleurs_parquet(cache, manifest)
         if _clips_complete(cache, manifest):

@@ -161,12 +161,13 @@ def main() -> int:
     (args.out / "models.json").write_text(json.dumps(sidecar, indent=2) + "\n", encoding="utf-8")
     if problems:
         print(
-            f"\n❌ {len(problems)} problem(s); nothing was invented to fill them:", file=sys.stderr
+            f"\nError: {len(problems)} problem(s); nothing was invented to fill them:",
+            file=sys.stderr,
         )
         for p in problems:
             print("  - " + p, file=sys.stderr)
         return 1
-    print("✅ All 200 clips found for all three systems; utt_id and duration agree.")
+    print("OK: All 200 clips found for all three systems; utt_id and duration agree.")
     return 0
 
 

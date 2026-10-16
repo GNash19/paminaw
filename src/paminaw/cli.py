@@ -120,18 +120,18 @@ def cmd_prepare_offline(args: argparse.Namespace) -> int:
     zip_src = Path(args.clips_zip) if args.clips_zip else None
     if zip_src and zip_src.is_file():
         shutil.copy2(zip_src, out / CLIPS_ZIP)
-    print(f"✅ clips → {out / 'clips'}")
+    print(f"Saved clips → {out / 'clips'}")
     hub_cache = out / "hf_home" / "hub"  # a normal Hugging Face cache; point HF_HOME at hf_home
     for name in args.models:
         spec = OFFLINE_MODELS.get(name, {})
-        print(f"⬇️  {name} ...")
+        print(f"Downloading {name} ...")
         snapshot_download(
             name,
             cache_dir=hub_cache,
             allow_patterns=spec.get("allow"),
             ignore_patterns=spec.get("ignore"),
         )
-        print(f"✅ {name} → {hub_cache}")
+        print(f"Saved {name} → {hub_cache}")
     print(
         f"\nDone. Before starting Jupyter set PAMINAW_OFFLINE_DIR={out}, "
         f"HF_HOME={out / 'hf_home'} and HF_HUB_OFFLINE=1 (see docs/OFFLINE.md)."
@@ -174,7 +174,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         return int(args.func(args))
     except PaminawDataError as err:
-        print(f"❌ {err}", file=sys.stderr)
+        print(f"Error: {err}", file=sys.stderr)
         return 1
 
 

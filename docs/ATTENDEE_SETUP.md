@@ -19,10 +19,10 @@ Google's computers.
 2. Sign in to Google if asked. If Colab says the notebook is "not authored by Google", click
    **Run anyway**: that is normal for notebooks from GitHub.
 3. Click into **cell 0** and press **Shift+Enter**. Wait about a minute for the line
-   **✅ READY**.
+   **READY**.
 4. Done. You can close the tab. On the day, you will open a fresh copy and run cell 0 again.
 
-If cell 0 prints a ❌ line, read the **Fix:** part of the message. It tells you what to do. If
+If cell 0 prints a line that starts with **Error:**, read the **Fix:** part of the message. It tells you what to do. If
 you are still stuck, open an issue on GitHub or ask us at the start of the workshop.
 
 ## Good to know

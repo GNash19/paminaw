@@ -98,7 +98,7 @@ def test_corrupt_download_is_rejected(tmp_path, monkeypatch):
 def test_setup_workshop_prints_ready(offline_dir, capsys):
     s = env.setup_workshop(offline_dir=offline_dir)
     out = capsys.readouterr().out
-    assert "✅ READY: 200 clips" in out and "workshop subset" in out
+    assert "READY: 200 clips" in out and "workshop subset" in out
     assert s.n_clips == 200 and s.device in ("cpu", "cuda")
 
 
